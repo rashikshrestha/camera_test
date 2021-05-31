@@ -153,6 +153,9 @@ void *ImageDisplayThread(void *context)
 				if (img->status == 0)
 				{
 					m_latestBuffer = img->address;
+
+					std::cout << "img->address = " << img->address << std::endl;
+					
 					// Can the acquired buffer be displayed?
 					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
 					{
@@ -392,22 +395,25 @@ int main(int argc, char *argv[])
 					printf("Camera ROI set for \n - Height = %d\n - Width = %d\n - PixelFormat (val) = 0x%08x\n",
 						   height, width, format);
 
-					// maxHeight = height;
-					// maxWidth = width;
-					// maxDepth = GetPixelSizeInBytes(format);
+					maxHeight = height;
+					maxWidth = width;
+					maxDepth = GetPixelSizeInBytes(format);
 
 					std::cout << "maxDepth = " << maxDepth << std::endl;
 
-					// Allocate image buffers
 					// (Either the image size or the payload_size, whichever is larger - allows for packed pixel formats).
 					size = maxDepth * maxWidth * maxHeight;
-					// size = (payload_size > size) ? payload_size : size;
+					size = (payload_size > size) ? payload_size : size;
+
+					//=================================================================
+					// Allocate image buffers
 					for (i = 0; i < numBuffers; i++)
 					{
 						bufAddress[i] = (PUINT8)malloc(size);
 						memset(bufAddress[i], 0, size);
 					}
 
+					//=================================================================					
 					// Initialize a transfer with asynchronous buffer handling.
 					status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
 
