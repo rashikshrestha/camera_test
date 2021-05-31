@@ -336,7 +336,7 @@ int main(int argc, char *argv[])
 			//====================================================================
 			// Open the camera.
 			status = GevOpenCamera(&pCamera[camIndex], GevExclusiveMode, &handle);
-            (!status)? LOG("Camera open succeed") : LOG("Camera open Failed");
+            (!status)? LOG("Camera open Succeed") : LOG("Camera open Failed");
 
 			// Get the low part of the MAC address (use it as part of a unique file name for saving images).
 			// Generate a unique base name to be used for saving image files
@@ -348,36 +348,20 @@ int main(int argc, char *argv[])
 			// Go on to adjust some API related settings (for tuning / diagnostics / etc....).
 			if (status == 0)
 			{
+                //=====================================================================
+                // Adjust the camera interface options if desired (see the manual)
+
 				GEV_CAMERA_OPTIONS camOptions = {0};
 
-				// Adjust the camera interface options if desired (see the manual)
-				GevGetCameraInterfaceOptions(handle, &camOptions);
+				GevGetCameraInterfaceOptions(handle, &camOptions); // Get interface options
 				//camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
 				camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
 
-#if TUNE_STREAMING_THREADS
-				// Some tuning can be done here. (see the manual)
-				camOptions.streamFrame_timeout_ms = 1001;			// Internal timeout for frame reception.
-				camOptions.streamNumFramesBuffered = 4;				// Buffer frames internally.
-				camOptions.streamMemoryLimitMax = 64 * 1024 * 1024; // Adjust packet memory buffering limit.
-				camOptions.streamPktSize = 9180;					// Adjust the GVSP packet size.
-				camOptions.streamPktDelay = 10;						// Add usecs between packets to pace arrival at NIC.
-
-				// Assign specific CPUs to threads (affinity) - if required for better performance.
-				{
-					int numCpus = _GetNumCpus();
-					if (numCpus > 1)
-					{
-						camOptions.streamThreadAffinity = numCpus - 1;
-						camOptions.serverThreadAffinity = numCpus - 2;
-					}
-				}
-#endif
-				// Write the adjusted interface options back.
-				GevSetCameraInterfaceOptions(handle, &camOptions);
+				GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
 
 				//=====================================================================
 				// Get the GenICam FeatureNodeMap object and access the camera features.
+
 				GenApi::CNodeMapRef *Camera = static_cast<GenApi::CNodeMapRef *>(GevGetFeatureNodeMap(handle));
 
 				if (Camera)
@@ -420,64 +404,64 @@ int main(int argc, char *argv[])
 						memset(bufAddress[i], 0, size);
 					}
 
-#if USE_SYNCHRONOUS_BUFFER_CYCLING
-					// Initialize a transfer with synchronous buffer handling.
-					status = GevInitializeTransfer(handle, SynchronousNextEmpty, size, numBuffers, bufAddress);
-#else
+
 					// Initialize a transfer with asynchronous buffer handling.
 					status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
-#endif
 
-					// Create an image display window.
-					// This works best for monochrome and RGB. The packed color formats (with Y, U, V, etc..) require
-					// conversion as do, if desired, Bayer formats.
-					// (Packed pixels are unpacked internally unless passthru mode is enabled).
+                    if(0)
+                    {
+                        // Create an image display window.
+                        // This works best for monochrome and RGB. The packed color formats (with Y, U, V, etc..) require
+                        // conversion as do, if desired, Bayer formats.
+                        // (Packed pixels are unpacked internally unless passthru mode is enabled).
 
-					// Translate the raw pixel format to one suitable for the (limited) Linux display routines.
+                        // Translate the raw pixel format to one suitable for the (limited) Linux display routines.
 
-					status = GetX11DisplayablePixelFormat(ENABLE_BAYER_CONVERSION, format, &convertedGevFormat, &pixFormat);
+                        status = GetX11DisplayablePixelFormat(ENABLE_BAYER_CONVERSION, format, &convertedGevFormat, &pixFormat);
 
-					if (format != convertedGevFormat)
-					{
-						// We MAY need to convert the data on the fly to display it.
-						if (GevIsPixelTypeRGB(convertedGevFormat))
-						{
-							// Conversion to RGB888 required.
-							pixDepth = 32; // Assume 4 8bit components for color display (RGBA)
-							context.format = Convert_SaperaFormat_To_X11(pixFormat);
-							context.depth = pixDepth;
-							context.convertBuffer = malloc((maxWidth * maxHeight * ((pixDepth + 7) / 8)));
-							context.convertFormat = TRUE;
-						}
-						else
-						{
-							// Converted format is MONO - generally this is handled
-							// internally (unpacking etc...) unless in passthru mode.
-							// (
-							pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
-							context.format = Convert_SaperaFormat_To_X11(pixFormat);
-							context.depth = pixDepth;
-							context.convertBuffer = NULL;
-							context.convertFormat = FALSE;
-						}
-					}
-					else
-					{
-						pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
-						context.format = Convert_SaperaFormat_To_X11(pixFormat);
-						context.depth = pixDepth;
-						context.convertBuffer = NULL;
-						context.convertFormat = FALSE;
-					}
+                        if (format != convertedGevFormat)
+                        {
+                            // We MAY need to convert the data on the fly to display it.
+                            if (GevIsPixelTypeRGB(convertedGevFormat))
+                            {
+                                // Conversion to RGB888 required.
+                                pixDepth = 32; // Assume 4 8bit components for color display (RGBA)
+                                context.format = Convert_SaperaFormat_To_X11(pixFormat);
+                                context.depth = pixDepth;
+                                context.convertBuffer = malloc((maxWidth * maxHeight * ((pixDepth + 7) / 8)));
+                                context.convertFormat = TRUE;
+                            }
+                            else
+                            {
+                                // Converted format is MONO - generally this is handled
+                                // internally (unpacking etc...) unless in passthru mode.
+                                // (
+                                pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
+                                context.format = Convert_SaperaFormat_To_X11(pixFormat);
+                                context.depth = pixDepth;
+                                context.convertBuffer = NULL;
+                                context.convertFormat = FALSE;
+                            }
+                        }
+                        else
+                        {
+                            pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
+                            context.format = Convert_SaperaFormat_To_X11(pixFormat);
+                            context.depth = pixDepth;
+                            context.convertBuffer = NULL;
+                            context.convertFormat = FALSE;
+                        }
 
-					View = CreateDisplayWindow("GigE-V GenApi Console Demo", TRUE, height, width, pixDepth, pixFormat, FALSE);
+                        View = CreateDisplayWindow("GigE-V GenApi Console Demo", TRUE, height, width, pixDepth, pixFormat, FALSE);
 
-					//===============================================================================================================
-					// Create a thread to receive images from the API and display them.
-					context.View = View;
-					context.camHandle = handle;
-					context.exit = FALSE;
-					pthread_create(&tid, NULL, ImageDisplayThread, &context);
+                        //===============================================================================================================
+                        // Create a thread to receive images from the API and display them.
+                        context.View = View;
+                        context.camHandle = handle;
+                        context.exit = FALSE;
+                        pthread_create(&tid, NULL, ImageDisplayThread, &context);
+
+                    }
 
 					//===============================================================================================================
 					// // Wait for the Input Key and act accordingly
