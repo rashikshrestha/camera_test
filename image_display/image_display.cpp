@@ -396,7 +396,7 @@ int main(int argc, char *argv[])
 					maxWidth = width;
 					maxDepth = GetPixelSizeInBytes(format);
 
-					printf("maxDepth = %d", &maxDepth);
+					std::cout << "maxDepth = " << maxDepth << std::endl;
 
 					// Allocate image buffers
 					// (Either the image size or the payload_size, whichever is larger - allows for packed pixel formats).
