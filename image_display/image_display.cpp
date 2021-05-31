@@ -230,6 +230,31 @@ int IsTurboDriveAvailable(GEV_CAMERA_HANDLE handle)
 	return 0;
 }
 
+void print_camera_info(GEV_DEVICE_INTERFACE pCamera)
+{
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "Camera Info : " << std::endl;
+    std::cout << "fIPv6 = " << pCamera.fIPv6 << std::endl;
+    std::cout << "ipAddr = " << pCamera.ipAddr << std::endl;
+    std::cout << "ipAddrLow = " << pCamera.ipAddrLow << std::endl;
+    std::cout << "ipAddrHigh = " << pCamera.ipAddrHigh << std::endl;
+    std::cout << "macLow = " << pCamera.macLow << std::endl;
+    std::cout << "macHigh = " << pCamera.macHigh << std::endl;
+    std::cout << "host.fIPv6 = " << pCamera.host.fIPv6 << std::endl;
+    std::cout << "host.ifIndex = " << pCamera.host.ifIndex << std::endl;
+    std::cout << "host.ipAddr = " << pCamera.host.ipAddr << std::endl;
+    std::cout << "host.ipAddrHigh = " << pCamera.host.ipAddrHigh << std::endl;
+    std::cout << "host.ipAddrLow = " << pCamera.host.ipAddrLow << std::endl;
+    std::cout << "mode = " << pCamera.mode << std::endl;
+    std::cout << "capabilities = " << pCamera.capabilities << std::endl;
+    std::cout << "manufacturer = " << pCamera.manufacturer << std::endl;
+    std::cout << "model = " << pCamera.model << std::endl;
+    std::cout << "serial = " << pCamera.serial << std::endl;
+    std::cout << "version = " << pCamera.version << std::endl;
+    std::cout << "username = " << pCamera.username << std::endl;
+    std::cout << "---------------------------------" << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
 	GEV_DEVICE_INTERFACE pCamera[MAX_CAMERAS] = {0};
@@ -244,34 +269,6 @@ int main(int argc, char *argv[])
 	int turboDriveAvailable = 0;
 	char uniqueName[128];
 	uint32_t macLow = 0; // Low 32-bits of the mac address (for file naming).
-
-	// Boost application RT response (not too high since GEV library boosts data receive thread to max allowed)
-	// SCHED_FIFO can cause many unintentional side effects.
-	// SCHED_RR has fewer side effects.
-	// SCHED_OTHER (normal default scheduler) is not too bad afer all.
-	if (0)
-	{
-		//int policy = SCHED_FIFO;
-		int policy = SCHED_RR;
-		pthread_attr_t attrib;
-		int inherit_sched = 0;
-		struct sched_param param = {0};
-
-		// Set an average RT priority (increase/decrease to tuner performance).
-		param.sched_priority = (sched_get_priority_max(policy) - sched_get_priority_min(policy)) / 2;
-
-		// Set scheduler policy
-		pthread_setschedparam(pthread_self(), policy, &param); // Don't care if it fails since we can't do anyting about it.
-
-		// Make sure all subsequent threads use the same policy.
-		pthread_attr_init(&attrib);
-		pthread_attr_getinheritsched(&attrib, &inherit_sched);
-		if (inherit_sched != PTHREAD_INHERIT_SCHED)
-		{
-			inherit_sched = PTHREAD_INHERIT_SCHED;
-			pthread_attr_setinheritsched(&attrib, inherit_sched);
-		}
-	}
 
 	//============================================================================
 	// Greetings
@@ -291,38 +288,12 @@ int main(int argc, char *argv[])
 	}
 
 	//====================================================================================
-	// DISCOVER Cameras
-	//
 	// Get all the IP addresses of attached network cards.
 
 	status = GevGetCameraList(pCamera, MAX_CAMERAS, &numCamera);
 
-	std::cout << "Details about camera : " << std::endl;		
-	std::cout << "fIPv6 = " << pCamera[0].fIPv6 << std::endl;
-	std::cout << "ipAddr = " << pCamera[0].ipAddr << std::endl;
-	std::cout << "ipAddrLow = " << pCamera[0].ipAddrLow << std::endl;
-	std::cout << "ipAddrHigh = " << pCamera[0].ipAddrHigh << std::endl;
-	std::cout << "macLow = " << pCamera[0].macLow << std::endl;             
-	std::cout << "macHigh = " << pCamera[0].macHigh << std::endl;
-	std::cout << "host.fIPv6 = " << pCamera[0].host.fIPv6 << std::endl;
-	std::cout << "host.ifIndex = " << pCamera[0].host.ifIndex << std::endl;
-	std::cout << "host.ipAddr = " << pCamera[0].host.ipAddr << std::endl;
-	std::cout << "host.ipAddrHigh = " << pCamera[0].host.ipAddrHigh << std::endl;
-	std::cout << "host.ipAddrLow = " << pCamera[0].host.ipAddrLow << std::endl;
-	std::cout << "mode = " << pCamera[0].mode << std::endl;
-	std::cout << "capabilities = " << pCamera[0].capabilities << std::endl;
-
-	// GEV_NETWORK_INTERFACE host;
-	
-	
-
-	// std::cout << pCamera[0].ipAddr << std::endl;
-	// std::cout << pCamera[0].ipAddr << std::endl;
-
-	
-
-
 	printf("%d camera(s) on the network\n", numCamera);
+    print_camera_info(pCamera[0]);
 
 	// Select the first camera found (unless the command line has a parameter = the camera index)
 	if (numCamera != 0)
@@ -341,8 +312,7 @@ int main(int argc, char *argv[])
 		{
 			//====================================================================
 			// Connect to Camera
-			//
-			//
+			
 			int i;
 			int type;
 			UINT32 height = 0;
@@ -718,27 +688,3 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-// void print_camera_info(GEV_DEVICE_INTERFACE pCamera)
-// {
-//     std::cout << "---------------------------------" << std::endl;
-//     std::cout << "Camera Info : " << std::endl;
-//     std::cout << "fIPv6 = " << pCamera.fIPv6 << std::endl;
-//     std::cout << "ipAddr = " << pCamera.ipAddr << std::endl;
-//     std::cout << "ipAddrLow = " << pCamera.ipAddrLow << std::endl;
-//     std::cout << "ipAddrHigh = " << pCamera.ipAddrHigh << std::endl;
-//     std::cout << "macLow = " << pCamera.macLow << std::endl;
-//     std::cout << "macHigh = " << pCamera.macHigh << std::endl;
-//     std::cout << "host.fIPv6 = " << pCamera.host.fIPv6 << std::endl;
-//     std::cout << "host.ifIndex = " << pCamera.host.ifIndex << std::endl;
-//     std::cout << "host.ipAddr = " << pCamera.host.ipAddr << std::endl;
-//     std::cout << "host.ipAddrHigh = " << pCamera.host.ipAddrHigh << std::endl;
-//     std::cout << "host.ipAddrLow = " << pCamera.host.ipAddrLow << std::endl;
-//     std::cout << "mode = " << pCamera.mode << std::endl;
-//     std::cout << "capabilities = " << pCamera.capabilities << std::endl;
-//     std::cout << "manufacturer = " << pCamera.manufacturer << std::endl;
-//     std::cout << "model = " << pCamera.model << std::endl;
-//     std::cout << "serial = " << pCamera.serial << std::endl;
-//     std::cout << "version = " << pCamera.version << std::endl;
-//     std::cout << "username = " << pCamera.username << std::endl;
-//     std::cout << "---------------------------------" << std::endl;
-// }
