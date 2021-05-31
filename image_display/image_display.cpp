@@ -333,21 +333,21 @@ int main(int argc, char *argv[])
 			//====================================================================
 			// Open the camera.
 			status = GevOpenCamera(&pCamera[camIndex], GevExclusiveMode, &handle);
-			if (status == 0)
-			{
-				//=================================================================
-				// GenICam feature access via Camera XML File enabled by "open"
-				//
-				// Get the name of XML file name back (example only - in case you need it somewhere).
-				//
-				char xmlFileName[MAX_PATH] = {0};
-				status = GevGetGenICamXML_FileName(handle, (int)sizeof(xmlFileName), xmlFileName);
-				if (status == GEVLIB_OK)
-				{
-					printf("XML stored as %s\n", xmlFileName);
-				}
-				status = GEVLIB_OK;
-			}
+			// if (status == 0)
+			// {
+			// 	//=================================================================
+			// 	// GenICam feature access via Camera XML File enabled by "open"
+			// 	//
+			// 	// Get the name of XML file name back (example only - in case you need it somewhere).
+			// 	//
+			// 	char xmlFileName[MAX_PATH] = {0};
+			// 	status = GevGetGenICamXML_FileName(handle, (int)sizeof(xmlFileName), xmlFileName);
+			// 	if (status == GEVLIB_OK)
+			// 	{
+			// 		printf("XML stored as %s\n", xmlFileName);
+			// 	}
+			// 	status = GEVLIB_OK;
+			// }
 			// Get the low part of the MAC address (use it as part of a unique file name for saving images).
 			// Generate a unique base name to be used for saving image files
 			// based on the last 3 octets of the MAC address.
