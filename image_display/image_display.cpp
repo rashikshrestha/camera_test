@@ -172,8 +172,6 @@ void *ImageDisplayThread(void *context)
 			GEV_BUFFER_OBJECT *img = NULL;
 			GEV_STATUS status = 0;
 
-			print_buffer_data_info(img);
-
 			// Wait for images to be received (wait for 1 second here!!)
 			// [R] Actually it waits for 1 sec if buffer is completly empty
 			// And return the pointer to unred frame if buffer has data on it
@@ -181,11 +179,11 @@ void *ImageDisplayThread(void *context)
 
 			if ((img != NULL) && (status == GEVLIB_OK))
 			{
+				print_buffer_data_info(img);
+
 				if (img->status == 0)
 				{
 					m_latestBuffer = img->address;
-
-					std::cout << "m_latestBuffer = " << m_latestBuffer << std::endl;
 
 					// Can the acquired buffer be displayed?
 					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
