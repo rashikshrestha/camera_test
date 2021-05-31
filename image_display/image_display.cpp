@@ -148,7 +148,7 @@ void print_buffer_data_info(GEV_BUFFER_OBJECT *img)
 	std::cout << "img->y_padding  = " << img->y_padding << std::endl;
 	std::cout << "img->d  = " << img->d << std::endl;
 	std::cout << "img->format  = " << img->format << std::endl;
-	// std::cout << "img->address  = " << img->address << std::endl;
+	std::cout << "img->address  = " << img->address << std::endl;
 	// std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
 	// std::cout << "img->chunk_size  = " << img->chunk_size << std::endl;
 	std::cout << "img->filename  = " << img->filename << std::endl;
