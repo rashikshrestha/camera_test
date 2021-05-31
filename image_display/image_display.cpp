@@ -9,6 +9,7 @@
 #include <sched.h>
 #include <iostream>  // [R] Added for debug purpose
 
+#define DISPLAY 0
 
 #define MAX_NETIF 8
 #define MAX_CAMERAS_PER_NETIF 32
@@ -351,13 +352,13 @@ int main(int argc, char *argv[])
                 //=====================================================================
                 // Adjust the camera interface options if desired (see the manual)
 
-				GEV_CAMERA_OPTIONS camOptions = {0};
+				// GEV_CAMERA_OPTIONS camOptions = {0};
 
-				GevGetCameraInterfaceOptions(handle, &camOptions); // Get interface options
-				//camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
-				camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
+				// GevGetCameraInterfaceOptions(handle, &camOptions); // Get interface options
+				// //camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
+				// camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
 
-				GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
+				// GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
 
 				//=====================================================================
 				// Get the GenICam FeatureNodeMap object and access the camera features.
@@ -408,9 +409,11 @@ int main(int argc, char *argv[])
 					// Initialize a transfer with asynchronous buffer handling.
 					status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
 
-                    if(0)
+                    //=================================================================
+                    // Create an image display window.
+                    if(DISPLAY)
                     {
-                        // Create an image display window.
+                        
                         // This works best for monochrome and RGB. The packed color formats (with Y, U, V, etc..) require
                         // conversion as do, if desired, Bayer formats.
                         // (Packed pixels are unpacked internally unless passthru mode is enabled).
