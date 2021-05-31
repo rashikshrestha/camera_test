@@ -128,6 +128,33 @@ void PrintMenu()
 	printf("MISC     : [Q]or[ESC]=end,         [T]=Toggle TurboMode (if available), [@]=SaveToFile\n");
 }
 
+void print_buffer_data_info(GEV_BUFFER_OBJECT *img)
+{
+	std::cout << "---------------------------------" << std::endl;
+	std::cout << "Buffer data Info : " << std::endl;
+	std::cout << "img->payload_type = " << img->payload_type << std::endl;
+	std::cout << "img->state  = " << img->state << std::endl;
+	std::cout << "img->status  = " << img->status << std::endl;
+	std::cout << "img->timestamp_hi  = " << img->timestamp_hi << std::endl;
+	std::cout << "img->timestamp_lo  = " << img->timestamp_lo << std::endl;
+	std::cout << "img->timestamp  = " << img->timestamp << std::endl;
+	std::cout << "img->recv_size  = " << img->recv_size << std::endl;
+	std::cout << "img->id  = " << img->id << std::endl;
+	std::cout << "img->h  = " << img->h << std::endl;
+	std::cout << "img->w  = " << img->w << std::endl;
+	std::cout << "img->x_offset  = " << img->x_offset << std::endl;
+	std::cout << "img->y_offset  = " << img->y_offset << std::endl;
+	std::cout << "img->x_padding  = " << img->x_padding << std::endl;
+	std::cout << "img->y_padding  = " << img->y_padding << std::endl;
+	std::cout << "img->d  = " << img->d << std::endl;
+	std::cout << "img->format  = " << img->format << std::endl;
+	std::cout << "img->address  = " << img->address << std::endl;
+	std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
+	std::cout << "img->chunk_size  = " << img->chunk_size << std::endl;
+	std::cout << "img->filename  = " << img->filename << std::endl;
+	std::cout << "---------------------------------" << std::endl;
+}
+
 void *ImageDisplayThread(void *context)
 {
 	MY_CONTEXT *displayContext = (MY_CONTEXT *)context;
@@ -145,11 +172,12 @@ void *ImageDisplayThread(void *context)
 			GEV_BUFFER_OBJECT *img = NULL;
 			GEV_STATUS status = 0;
 
-			LOG("inside thread !!");
+			print_buffer_data_info(img);
 
 			// Wait for images to be received (wait for 1 second here!!)
+			// [R] Actually it waits for 1 sec if buffer is completly empty
+			// And return the pointer to unred frame if buffer has data on it
 			status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
-
 
 			if ((img != NULL) && (status == GEVLIB_OK))
 			{
@@ -257,6 +285,7 @@ void print_camera_info(GEV_DEVICE_INTERFACE pCamera)
 	std::cout << "username = " << pCamera.username << std::endl;
 	std::cout << "---------------------------------" << std::endl;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -409,7 +438,7 @@ int main(int argc, char *argv[])
 						memset(bufAddress[i], 0, size);
 					}
 
-					//=================================================================					
+					//=================================================================
 					// Initialize a transfer with asynchronous buffer handling.
 					status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
 
