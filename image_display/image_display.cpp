@@ -147,50 +147,50 @@ void *ImageDisplayThread(void *context)
 
 			LOG("inside thread !!");
 
-			// Wait for images to be received
+			// Wait for images to be received (wait for 1 second here!!)
 			status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
 
 
-			// if ((img != NULL) && (status == GEVLIB_OK))
-			// {
-			// 	if (img->status == 0)
-			// 	{
-			// 		m_latestBuffer = img->address;
+			if ((img != NULL) && (status == GEVLIB_OK))
+			{
+				if (img->status == 0)
+				{
+					m_latestBuffer = img->address;
 
-			// 		std::cout << "m_latestBuffer = " << m_latestBuffer << std::endl;
+					std::cout << "m_latestBuffer = " << m_latestBuffer << std::endl;
 
-			// 		// Can the acquired buffer be displayed?
-			// 		if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
-			// 		{
-			// 			// Convert the image format if required.
-			// 			if (displayContext->convertFormat)
-			// 			{
-			// 				int gev_depth = GevGetPixelDepthInBits(img->format);
-			// 				// Convert the image to a displayable format.
-			// 				//(Note : Not all formats can be displayed properly at this time (planar, YUV*, 10/12 bit packed).
-			// 				ConvertGevImageToX11Format(img->w, img->h, gev_depth, img->format, img->address,
-			// 										   displayContext->depth, displayContext->format, displayContext->convertBuffer);
+					// Can the acquired buffer be displayed?
+					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
+					{
+						// Convert the image format if required.
+						if (displayContext->convertFormat)
+						{
+							int gev_depth = GevGetPixelDepthInBits(img->format);
+							// Convert the image to a displayable format.
+							//(Note : Not all formats can be displayed properly at this time (planar, YUV*, 10/12 bit packed).
+							ConvertGevImageToX11Format(img->w, img->h, gev_depth, img->format, img->address,
+													   displayContext->depth, displayContext->format, displayContext->convertBuffer);
 
-			// 				// Display the image in the (supported) converted format.
-			// 				Display_Image(displayContext->View, displayContext->depth, img->w, img->h, displayContext->convertBuffer);
-			// 			}
-			// 			else
-			// 			{
-			// 				// Display the image in the (supported) received format.
-			// 				Display_Image(displayContext->View, img->d, img->w, img->h, img->address);
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			//printf("Not displayable\n");
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		// Image had an error (incomplete (timeout/overflow/lost)).
-			// 		// Do any handling of this condition necessary.
-			// 	}
-			// }
+							// Display the image in the (supported) converted format.
+							Display_Image(displayContext->View, displayContext->depth, img->w, img->h, displayContext->convertBuffer);
+						}
+						else
+						{
+							// Display the image in the (supported) received format.
+							Display_Image(displayContext->View, img->d, img->w, img->h, img->address);
+						}
+					}
+					else
+					{
+						//printf("Not displayable\n");
+					}
+				}
+				else
+				{
+					// Image had an error (incomplete (timeout/overflow/lost)).
+					// Do any handling of this condition necessary.
+				}
+			}
 		}
 	}
 	pthread_exit(0);
