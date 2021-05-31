@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
 				//camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
 				camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
 
-				GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
+				// GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
 
 				//=====================================================================
 				// Get the GenICam FeatureNodeMap object and access the camera features.
