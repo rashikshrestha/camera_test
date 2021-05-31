@@ -392,16 +392,16 @@ int main(int argc, char *argv[])
 					printf("Camera ROI set for \n - Height = %d\n - Width = %d\n - PixelFormat (val) = 0x%08x\n",
 						   height, width, format);
 
-					maxHeight = height;
-					maxWidth = width;
-					maxDepth = GetPixelSizeInBytes(format);
+					// maxHeight = height;
+					// maxWidth = width;
+					// maxDepth = GetPixelSizeInBytes(format);
 
 					std::cout << "maxDepth = " << maxDepth << std::endl;
 
 					// Allocate image buffers
 					// (Either the image size or the payload_size, whichever is larger - allows for packed pixel formats).
 					size = maxDepth * maxWidth * maxHeight;
-					size = (payload_size > size) ? payload_size : size;
+					// size = (payload_size > size) ? payload_size : size;
 					for (i = 0; i < numBuffers; i++)
 					{
 						bufAddress[i] = (PUINT8)malloc(size);
