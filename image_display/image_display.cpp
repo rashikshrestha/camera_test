@@ -7,7 +7,7 @@
 #include "X_Display_utils.h"
 #include "FileUtil.h"
 #include <sched.h>
-#include <iostream>  // [R] Added for debug purpose
+#include <iostream> // [R] Added for debug purpose
 
 #define DISPLAY 1
 
@@ -27,7 +27,7 @@
 
 #define NUM_BUF 8
 
-#define LOG(x) std::cout << x  << std::endl
+#define LOG(x) std::cout << x << std::endl
 
 void *m_latestBuffer = NULL;
 
@@ -236,27 +236,27 @@ int IsTurboDriveAvailable(GEV_CAMERA_HANDLE handle)
 
 void print_camera_info(GEV_DEVICE_INTERFACE pCamera)
 {
-    std::cout << "---------------------------------" << std::endl;
-    std::cout << "Camera Info : " << std::endl;
-    std::cout << "fIPv6 = " << pCamera.fIPv6 << std::endl;
-    std::cout << "ipAddr = " << pCamera.ipAddr << std::endl;
-    std::cout << "ipAddrLow = " << pCamera.ipAddrLow << std::endl;
-    std::cout << "ipAddrHigh = " << pCamera.ipAddrHigh << std::endl;
-    std::cout << "macLow = " << pCamera.macLow << std::endl;
-    std::cout << "macHigh = " << pCamera.macHigh << std::endl;
-    std::cout << "host.fIPv6 = " << pCamera.host.fIPv6 << std::endl;
-    std::cout << "host.ifIndex = " << pCamera.host.ifIndex << std::endl;
-    std::cout << "host.ipAddr = " << pCamera.host.ipAddr << std::endl;
-    std::cout << "host.ipAddrHigh = " << pCamera.host.ipAddrHigh << std::endl;
-    std::cout << "host.ipAddrLow = " << pCamera.host.ipAddrLow << std::endl;
-    std::cout << "mode = " << pCamera.mode << std::endl;
-    std::cout << "capabilities = " << pCamera.capabilities << std::endl;
-    std::cout << "manufacturer = " << pCamera.manufacturer << std::endl;
-    std::cout << "model = " << pCamera.model << std::endl;
-    std::cout << "serial = " << pCamera.serial << std::endl;
-    std::cout << "version = " << pCamera.version << std::endl;
-    std::cout << "username = " << pCamera.username << std::endl;
-    std::cout << "---------------------------------" << std::endl;
+	std::cout << "---------------------------------" << std::endl;
+	std::cout << "Camera Info : " << std::endl;
+	std::cout << "fIPv6 = " << pCamera.fIPv6 << std::endl;
+	std::cout << "ipAddr = " << pCamera.ipAddr << std::endl;
+	std::cout << "ipAddrLow = " << pCamera.ipAddrLow << std::endl;
+	std::cout << "ipAddrHigh = " << pCamera.ipAddrHigh << std::endl;
+	std::cout << "macLow = " << pCamera.macLow << std::endl;
+	std::cout << "macHigh = " << pCamera.macHigh << std::endl;
+	std::cout << "host.fIPv6 = " << pCamera.host.fIPv6 << std::endl;
+	std::cout << "host.ifIndex = " << pCamera.host.ifIndex << std::endl;
+	std::cout << "host.ipAddr = " << pCamera.host.ipAddr << std::endl;
+	std::cout << "host.ipAddrHigh = " << pCamera.host.ipAddrHigh << std::endl;
+	std::cout << "host.ipAddrLow = " << pCamera.host.ipAddrLow << std::endl;
+	std::cout << "mode = " << pCamera.mode << std::endl;
+	std::cout << "capabilities = " << pCamera.capabilities << std::endl;
+	std::cout << "manufacturer = " << pCamera.manufacturer << std::endl;
+	std::cout << "model = " << pCamera.model << std::endl;
+	std::cout << "serial = " << pCamera.serial << std::endl;
+	std::cout << "version = " << pCamera.version << std::endl;
+	std::cout << "username = " << pCamera.username << std::endl;
+	std::cout << "---------------------------------" << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 	status = GevGetCameraList(pCamera, MAX_CAMERAS, &numCamera);
 
 	printf("%d camera(s) on the network\n", numCamera);
-    print_camera_info(pCamera[0]);
+	print_camera_info(pCamera[0]);
 
 	// Select the first camera found (unless the command line has a parameter = the camera index)
 	if (numCamera != 0)
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 		{
 			//====================================================================
 			// Connect to Camera
-			
+
 			int i;
 			int type;
 			UINT32 height = 0;
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
 			//====================================================================
 			// Open the camera.
 			status = GevOpenCamera(&pCamera[camIndex], GevExclusiveMode, &handle);
-            (!status)? LOG("Camera open Succeed") : LOG("Camera open Failed");
+			(!status) ? LOG("Camera open Succeed") : LOG("Camera open Failed");
 
 			// Get the low part of the MAC address (use it as part of a unique file name for saving images).
 			// Generate a unique base name to be used for saving image files
@@ -349,8 +349,8 @@ int main(int argc, char *argv[])
 			// Go on to adjust some API related settings (for tuning / diagnostics / etc....).
 			if (status == 0)
 			{
-                //=====================================================================
-                // Adjust the camera interface options if desired (see the manual)
+				//=====================================================================
+				// Adjust the camera interface options if desired (see the manual)
 
 				// GEV_CAMERA_OPTIONS camOptions = {0};
 
@@ -389,11 +389,14 @@ int main(int argc, char *argv[])
 					//=================================================================
 					// Set up a grab/transfer from this camera
 					//
-					printf("Camera ROI set for \n\tHeight = %d\n\tWidth = %d\n\tPixelFormat (val) = 0x%08x\n", height, width, format);
+					printf("Camera ROI set for \n - Height = %d\n - Width = %d\n - PixelFormat (val) = 0x%08x\n",
+						   height, width, format);
 
 					maxHeight = height;
 					maxWidth = width;
 					maxDepth = GetPixelSizeInBytes(format);
+
+					printf("maxDepth = %d", &maxDepth);
 
 					// Allocate image buffers
 					// (Either the image size or the payload_size, whichever is larger - allows for packed pixel formats).
@@ -405,66 +408,64 @@ int main(int argc, char *argv[])
 						memset(bufAddress[i], 0, size);
 					}
 
-
 					// Initialize a transfer with asynchronous buffer handling.
 					status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
 
-                    //=================================================================
-                    // Create an image display window.
-                    if(DISPLAY)
-                    {
-                        
-                        // This works best for monochrome and RGB. The packed color formats (with Y, U, V, etc..) require
-                        // conversion as do, if desired, Bayer formats.
-                        // (Packed pixels are unpacked internally unless passthru mode is enabled).
+					//=================================================================
+					// Create an image display window.
+					if (DISPLAY)
+					{
 
-                        // Translate the raw pixel format to one suitable for the (limited) Linux display routines.
+						// This works best for monochrome and RGB. The packed color formats (with Y, U, V, etc..) require
+						// conversion as do, if desired, Bayer formats.
+						// (Packed pixels are unpacked internally unless passthru mode is enabled).
 
-                        status = GetX11DisplayablePixelFormat(ENABLE_BAYER_CONVERSION, format, &convertedGevFormat, &pixFormat);
+						// Translate the raw pixel format to one suitable for the (limited) Linux display routines.
 
-                        if (format != convertedGevFormat)
-                        {
-                            // We MAY need to convert the data on the fly to display it.
-                            if (GevIsPixelTypeRGB(convertedGevFormat))
-                            {
-                                // Conversion to RGB888 required.
-                                pixDepth = 32; // Assume 4 8bit components for color display (RGBA)
-                                context.format = Convert_SaperaFormat_To_X11(pixFormat);
-                                context.depth = pixDepth;
-                                context.convertBuffer = malloc((maxWidth * maxHeight * ((pixDepth + 7) / 8)));
-                                context.convertFormat = TRUE;
-                            }
-                            else
-                            {
-                                // Converted format is MONO - generally this is handled
-                                // internally (unpacking etc...) unless in passthru mode.
-                                // (
-                                pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
-                                context.format = Convert_SaperaFormat_To_X11(pixFormat);
-                                context.depth = pixDepth;
-                                context.convertBuffer = NULL;
-                                context.convertFormat = FALSE;
-                            }
-                        }
-                        else
-                        {
-                            pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
-                            context.format = Convert_SaperaFormat_To_X11(pixFormat);
-                            context.depth = pixDepth;
-                            context.convertBuffer = NULL;
-                            context.convertFormat = FALSE;
-                        }
+						status = GetX11DisplayablePixelFormat(ENABLE_BAYER_CONVERSION, format, &convertedGevFormat, &pixFormat);
 
-                        View = CreateDisplayWindow("GigE-V GenApi Console Demo", TRUE, height, width, pixDepth, pixFormat, FALSE);
+						if (format != convertedGevFormat)
+						{
+							// We MAY need to convert the data on the fly to display it.
+							if (GevIsPixelTypeRGB(convertedGevFormat))
+							{
+								// Conversion to RGB888 required.
+								pixDepth = 32; // Assume 4 8bit components for color display (RGBA)
+								context.format = Convert_SaperaFormat_To_X11(pixFormat);
+								context.depth = pixDepth;
+								context.convertBuffer = malloc((maxWidth * maxHeight * ((pixDepth + 7) / 8)));
+								context.convertFormat = TRUE;
+							}
+							else
+							{
+								// Converted format is MONO - generally this is handled
+								// internally (unpacking etc...) unless in passthru mode.
+								// (
+								pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
+								context.format = Convert_SaperaFormat_To_X11(pixFormat);
+								context.depth = pixDepth;
+								context.convertBuffer = NULL;
+								context.convertFormat = FALSE;
+							}
+						}
+						else
+						{
+							pixDepth = GevGetPixelDepthInBits(convertedGevFormat);
+							context.format = Convert_SaperaFormat_To_X11(pixFormat);
+							context.depth = pixDepth;
+							context.convertBuffer = NULL;
+							context.convertFormat = FALSE;
+						}
 
-                        //===============================================================================================================
-                        // Create a thread to receive images from the API and display them.
-                        context.View = View;
-                        context.camHandle = handle;
-                        context.exit = FALSE;
-                        pthread_create(&tid, NULL, ImageDisplayThread, &context);
+						View = CreateDisplayWindow("GigE-V GenApi Console Demo", TRUE, height, width, pixDepth, pixFormat, FALSE);
 
-                    }
+						//===============================================================================================================
+						// Create a thread to receive images from the API and display them.
+						context.View = View;
+						context.camHandle = handle;
+						context.exit = FALSE;
+						pthread_create(&tid, NULL, ImageDisplayThread, &context);
+					}
 
 					//===============================================================================================================
 					// // Wait for the Input Key and act accordingly
@@ -665,4 +666,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-
