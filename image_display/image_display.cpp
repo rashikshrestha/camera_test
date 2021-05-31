@@ -146,9 +146,8 @@ void *ImageDisplayThread(void *context)
 			GEV_STATUS status = 0;
 
 			// Wait for images to be received
-			LOG("Waiting for Next Image!!");
 			status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
-			
+
 
 			if ((img != NULL) && (status == GEVLIB_OK))
 			{
