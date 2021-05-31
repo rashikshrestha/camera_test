@@ -632,7 +632,8 @@ int main(int argc, char *argv[])
 
 					GevAbortTransfer(handle);
 					status = GevFreeTransfer(handle);
-					DestroyDisplayWindow(View);
+
+					// DestroyDisplayWindow(View);
 
 					for (i = 0; i < numBuffers; i++)
 					{
