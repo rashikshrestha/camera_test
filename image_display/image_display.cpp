@@ -148,7 +148,7 @@ void *ImageDisplayThread(void *context)
 			LOG("inside thread !!");
 
 			// Wait for images to be received
-			// status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
+			status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
 
 
 			// if ((img != NULL) && (status == GEVLIB_OK))
