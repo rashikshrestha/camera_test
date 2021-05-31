@@ -146,7 +146,9 @@ void *ImageDisplayThread(void *context)
 			GEV_STATUS status = 0;
 
 			// Wait for images to be received
+			LOG("Waiting for Next Image!!");
 			status = GevWaitForNextImage(displayContext->camHandle, &img, 1000);
+			
 
 			if ((img != NULL) && (status == GEVLIB_OK))
 			{
@@ -154,8 +156,8 @@ void *ImageDisplayThread(void *context)
 				{
 					m_latestBuffer = img->address;
 
-					std::cout << "img->address = " << img->address << std::endl;
-					
+					std::cout << "m_latestBuffer = " << m_latestBuffer << std::endl;
+
 					// Can the acquired buffer be displayed?
 					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
 					{
