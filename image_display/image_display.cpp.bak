@@ -1,0 +1,90 @@
+// Minimal working code for single camera setup
+
+#include <iostream>
+#include "gevapi.h" //!< GEV lib definitions.
+#include <unistd.h>
+#include "GenApi/GenApi.h" //!< GenApi lib definitions.
+
+
+void print_camera_info(GEV_DEVICE_INTERFACE pCamera)
+{
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "Camera Info : " << std::endl;
+    std::cout << "fIPv6 = " << pCamera.fIPv6 << std::endl;
+    std::cout << "ipAddr = " << pCamera.ipAddr << std::endl;
+    std::cout << "ipAddrLow = " << pCamera.ipAddrLow << std::endl;
+    std::cout << "ipAddrHigh = " << pCamera.ipAddrHigh << std::endl;
+    std::cout << "macLow = " << pCamera.macLow << std::endl;
+    std::cout << "macHigh = " << pCamera.macHigh << std::endl;
+    std::cout << "host.fIPv6 = " << pCamera.host.fIPv6 << std::endl;
+    std::cout << "host.ifIndex = " << pCamera.host.ifIndex << std::endl;
+    std::cout << "host.ipAddr = " << pCamera.host.ipAddr << std::endl;
+    std::cout << "host.ipAddrHigh = " << pCamera.host.ipAddrHigh << std::endl;
+    std::cout << "host.ipAddrLow = " << pCamera.host.ipAddrLow << std::endl;
+    std::cout << "mode = " << pCamera.mode << std::endl;
+    std::cout << "capabilities = " << pCamera.capabilities << std::endl;
+    std::cout << "manufacturer = " << pCamera.manufacturer << std::endl;
+    std::cout << "model = " << pCamera.model << std::endl;
+    std::cout << "serial = " << pCamera.serial << std::endl;
+    std::cout << "version = " << pCamera.version << std::endl;
+    std::cout << "username = " << pCamera.username << std::endl;
+    std::cout << "---------------------------------" << std::endl;
+}
+
+int main(int argc, char *argv[])
+{
+    printf("Minimal working code for single camera setup! \n");
+
+    GEV_DEVICE_INTERFACE pCamera[256] = {0};
+    int numCamera;
+    GEV_STATUS status;
+    GEV_CAMERA_HANDLE handle = NULL;
+
+    UINT32 maxHeight = 1600;
+    UINT32 maxWidth = 2048;
+    UINT32 maxDepth = 2;
+    UINT64 size = maxDepth * maxWidth * maxHeight;
+    UINT64 payload_size;
+    int numBuffers = 8;
+    PUINT8 bufAddress[8];
+
+    status = GevGetCameraList(pCamera, 256, &numCamera);
+
+    std::cout << numCamera << " camera(s) available." << std::endl;
+    print_camera_info(pCamera[0]);
+
+
+    std::cout << "Opening camera" << std::endl;
+    status = GevOpenCamera(&pCamera[0], GevExclusiveMode, &handle);
+    if (status != 0)
+        printf("Error Opening Camera");
+
+    
+    std::cout << "Initializing Transfer" << std::endl;
+    status = GevInitializeTransfer(handle, Asynchronous, size, numBuffers, bufAddress);
+    if (status != 0)
+        printf("Error Initializing Transfer");
+
+    for (int i = 0; i < numBuffers; i++)
+    {
+        bufAddress[i] = (PUINT8)malloc(size);
+        memset(bufAddress[i], 0, size);
+    }
+
+    std::cout << "Starting Transfer" << std::endl;
+    status = GevStartTransfer(handle, 1);
+
+    if (status != 0)
+        printf("Error starting grab - 0x%x  or %d\n", status, status);
+
+    std::cout << "Stopping Transfer" << std::endl;
+    GevStopTransfer(handle);
+
+
+    std::cout << "Closing camera" << std::endl;
+    GevCloseCamera(&handle); // If not done, camera will still be opended and program won't end
+
+    printf("Code ends! \n");
+
+    return 0;
+}
