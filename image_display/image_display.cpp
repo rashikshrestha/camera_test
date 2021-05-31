@@ -352,11 +352,11 @@ int main(int argc, char *argv[])
                 //=====================================================================
                 // Adjust the camera interface options if desired (see the manual)
 
-				GEV_CAMERA_OPTIONS camOptions = {0};
+				// GEV_CAMERA_OPTIONS camOptions = {0};
 
-				GevGetCameraInterfaceOptions(handle, &camOptions); // Get interface options
-				//camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
-				camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
+				// GevGetCameraInterfaceOptions(handle, &camOptions); // Get interface options
+				// //camOptions.heartbeat_timeout_ms = 60000;		// For debugging (delay camera timeout while in debugger)
+				// camOptions.heartbeat_timeout_ms = 5000; // Disconnect detection (5 seconds)
 
 				// GevSetCameraInterfaceOptions(handle, &camOptions); // Set interface options
 
