@@ -148,8 +148,8 @@ void print_buffer_data_info(GEV_BUFFER_OBJECT *img)
 	std::cout << "img->y_padding  = " << img->y_padding << std::endl;
 	std::cout << "img->d  = " << img->d << std::endl;
 	std::cout << "img->format  = " << img->format << std::endl;
-	std::cout << "img->address  = " << img->address << std::endl;
-	std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
+	// std::cout << "img->address  = " << img->address << std::endl;
+	// std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
 	// std::cout << "img->chunk_size  = " << img->chunk_size << std::endl;
 	std::cout << "img->filename  = " << img->filename << std::endl;
 	std::cout << "---------------------------------" << std::endl;
@@ -427,6 +427,8 @@ int main(int argc, char *argv[])
 					// (Either the image size or the payload_size, whichever is larger - allows for packed pixel formats).
 					size = maxDepth * maxWidth * maxHeight;
 					size = (payload_size > size) ? payload_size : size;
+
+					std::cout << "Size = " << size << std::endl;
 
 					//=================================================================
 					// Allocate image buffers
