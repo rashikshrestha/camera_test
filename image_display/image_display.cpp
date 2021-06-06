@@ -185,7 +185,7 @@ void *ImageDisplayThread(void *context)
 				{
 					m_latestBuffer = img->address;
 
-					std::cout << "m_latestBuffer = " << m_latestBuffer << std::endl;
+					std::cout << "m_latestBuffer is = " << m_latestBuffer << std::endl;
 
 					// Can the acquired buffer be displayed?
 					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
