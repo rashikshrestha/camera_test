@@ -193,6 +193,7 @@ void *ImageDisplayThread(void *context)
 						// Convert the image format if required.
 						if (displayContext->convertFormat)
 						{
+							std::cout << "Inside if" << std::endl;
 							int gev_depth = GevGetPixelDepthInBits(img->format);
 							// Convert the image to a displayable format.
 							//(Note : Not all formats can be displayed properly at this time (planar, YUV*, 10/12 bit packed).
