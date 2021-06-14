@@ -131,28 +131,28 @@ void PrintMenu()
 void print_buffer_data_info(GEV_BUFFER_OBJECT *img)
 {
 	std::cout << "---------------------------------" << std::endl;
-	std::cout << "Buffer data Info : " << std::endl;
-	std::cout << "img->payload_type = " << img->payload_type << std::endl;
-	std::cout << "img->state  = " << img->state << std::endl;
-	std::cout << "img->status  = " << img->status << std::endl;
+	// std::cout << "Buffer data Info : " << std::endl;
+	// std::cout << "img->payload_type = " << img->payload_type << std::endl;
+	// std::cout << "img->state  = " << img->state << std::endl;
+	// std::cout << "img->status  = " << img->status << std::endl;
 	std::cout << "img->timestamp_hi  = " << img->timestamp_hi << std::endl;
 	std::cout << "img->timestamp_lo  = " << img->timestamp_lo << std::endl;
 	std::cout << "img->timestamp  = " << img->timestamp << std::endl;
-	std::cout << "img->recv_size  = " << img->recv_size << std::endl;
-	std::cout << "img->id  = " << img->id << std::endl;
-	std::cout << "img->h  = " << img->h << std::endl;
-	std::cout << "img->w  = " << img->w << std::endl;
-	std::cout << "img->x_offset  = " << img->x_offset << std::endl;
-	std::cout << "img->y_offset  = " << img->y_offset << std::endl;
-	std::cout << "img->x_padding  = " << img->x_padding << std::endl;
-	std::cout << "img->y_padding  = " << img->y_padding << std::endl;
-	std::cout << "img->d  = " << img->d << std::endl;
-	std::cout << "img->format  = " << img->format << std::endl;
-	// std::cout << "img->address  = " << img->address << std::endl;
-	// std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
-	// std::cout << "img->chunk_size  = " << img->chunk_size << std::endl;
-	std::cout << "img->filename  = " << img->filename << std::endl;
-	std::cout << "---------------------------------" << std::endl;
+	// std::cout << "img->recv_size  = " << img->recv_size << std::endl;
+	// std::cout << "img->id  = " << img->id << std::endl;
+	// std::cout << "img->h  = " << img->h << std::endl;
+	// std::cout << "img->w  = " << img->w << std::endl;
+	// std::cout << "img->x_offset  = " << img->x_offset << std::endl;
+	// std::cout << "img->y_offset  = " << img->y_offset << std::endl;
+	// std::cout << "img->x_padding  = " << img->x_padding << std::endl;
+	// std::cout << "img->y_padding  = " << img->y_padding << std::endl;
+	// std::cout << "img->d  = " << img->d << std::endl;
+	// std::cout << "img->format  = " << img->format << std::endl;
+	// // std::cout << "img->address  = " << img->address << std::endl;
+	// // std::cout << "img->chunk_data  = " << img->chunk_data << std::endl;
+	// // std::cout << "img->chunk_size  = " << img->chunk_size << std::endl;
+	// std::cout << "img->filename  = " << img->filename << std::endl;
+	// std::cout << "---------------------------------" << std::endl;
 }
 
 void *ImageDisplayThread(void *context)
@@ -179,13 +179,13 @@ void *ImageDisplayThread(void *context)
 
 			if ((img != NULL) && (status == GEVLIB_OK))
 			{
-				// print_buffer_data_info(img);
+				print_buffer_data_info(img);
 
 				if (img->status == 0)
 				{
 					m_latestBuffer = img->address;
 
-					std::cout << "m_latestBuffer is = " << m_latestBuffer << std::endl;
+					// std::cout << "m_latestBuffer is = " << m_latestBuffer << std::endl;
 
 					// Can the acquired buffer be displayed?
 					if (IsGevPixelTypeX11Displayable(img->format) || displayContext->convertFormat)
@@ -193,12 +193,10 @@ void *ImageDisplayThread(void *context)
 						// Convert the image format if required.
 						if (displayContext->convertFormat)
 						{
-
-							std::cout << "Inside if" << std::endl;
 							int gev_depth = GevGetPixelDepthInBits(img->format);
 							// Convert the image to a displayable format.
 							//(Note : Not all formats can be displayed properly at this time (planar, YUV*, 10/12 bit packed).
-							ConvertGevImageToX11Format(img->w, img->h, gev_depth, img->format, (unsigned char*)img->address,
+							ConvertGevImageToX11Format(img->w, img->h, gev_depth, img->format, img->address,
 													   displayContext->depth, displayContext->format, displayContext->convertBuffer);
 
 							// Display the image in the (supported) converted format.
